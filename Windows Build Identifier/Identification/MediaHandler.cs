@@ -316,7 +316,7 @@ namespace WindowsBuildIdentifier.Identification
                     }
                 }
 
-                foreach (string item in facade.GetFiles("", null, SearchOption.AllDirectories))
+                foreach (string item in facade.GetFiles("", "*.*", SearchOption.AllDirectories))
                 {
                     FileItem fileItem = new()
                     {
