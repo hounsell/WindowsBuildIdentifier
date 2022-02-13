@@ -35,7 +35,7 @@
     <PackageReference Include="DiscUtils.Vhdx" Version="0.16.13" />
     <PackageReference Include="DiscUtils.Vmdk" Version="0.16.13" />
     <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
-    <PackageReference Include="ManagedWimLib" Version="2.2.0" />
+    <PackageReference Include="ManagedWimLib" Version="2.4.0" />
   </ItemGroup>
 
 </Project>
