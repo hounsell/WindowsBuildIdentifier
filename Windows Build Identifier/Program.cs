@@ -21,7 +21,6 @@
  */
 
 using CommandLine;
-using DiscUtils.Complete;
 using DiscUtils.Iso9660;
 using DiscUtils.Udf;
 using DiscUtils.Vfs;
@@ -232,8 +231,6 @@ namespace WindowsBuildIdentifier
 
                 if (fileextension == "iso" || fileextension == "mdf")
                 {
-                    SetupHelper.SetupComplete();
-
                     try
                     {
                         using FileStream isoStream = File.Open(file, FileMode.Open, FileAccess.Read);
@@ -359,8 +356,6 @@ namespace WindowsBuildIdentifier
 
                 string label = "";
 
-                SetupHelper.SetupComplete();
-
                 try
                 {
                     using FileStream isoStream = File.Open(file, FileMode.Open, FileAccess.Read);
@@ -434,8 +429,6 @@ namespace WindowsBuildIdentifier
 
             if (fileextension == "iso" || fileextension == "mdf")
             {
-                SetupHelper.SetupComplete();
-
                 try
                 {
                     using FileStream isoStream = File.Open(opts.Media, FileMode.Open, FileAccess.Read);
@@ -506,8 +499,6 @@ namespace WindowsBuildIdentifier
         private static int RunIndexAndReturnExitCode(IndexOptions opts)
         {
             PrintBanner();
-
-            SetupHelper.SetupComplete();
 
             string file = opts.Media;
             string extension = file.Split(".")[^1];
@@ -605,8 +596,6 @@ namespace WindowsBuildIdentifier
         private static int RunIdentifyAndReturnExitCode(IdentifyOptions opts)
         {
             PrintBanner();
-
-            SetupHelper.SetupComplete();
 
             string file = opts.Media;
             if (string.IsNullOrEmpty(opts.Output))

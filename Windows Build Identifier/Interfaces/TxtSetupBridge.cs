@@ -1,5 +1,4 @@
 ﻿using DiscUtils;
-using DiscUtils.Internal;
 using DiscUtils.Registry;
 using DiscUtils.Streams;
 using IniParser;

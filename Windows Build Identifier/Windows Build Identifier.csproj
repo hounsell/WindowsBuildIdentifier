@@ -27,12 +27,15 @@
 
   <ItemGroup>
     <PackageReference Include="CommandLineParser" Version="2.8.0" />
+    <PackageReference Include="DiscUtils.Ntfs" Version="0.16.13" />
+    <PackageReference Include="DiscUtils.Registry" Version="0.16.13" />
+    <PackageReference Include="DiscUtils.Udf" Version="0.16.13" />
+    <PackageReference Include="DiscUtils.Vdi" Version="0.16.13" />
+    <PackageReference Include="DiscUtils.Vhd" Version="0.16.13" />
+    <PackageReference Include="DiscUtils.Vhdx" Version="0.16.13" />
+    <PackageReference Include="DiscUtils.Vmdk" Version="0.16.13" />
     <PackageReference Include="ini-parser-netstandard" Version="2.5.2" />
     <PackageReference Include="ManagedWimLib" Version="2.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\DiscUtilsLibrary\Library\DiscUtils\DiscUtils.csproj" />
   </ItemGroup>
 
 </Project>

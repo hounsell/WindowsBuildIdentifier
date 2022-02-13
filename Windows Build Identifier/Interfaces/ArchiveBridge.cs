@@ -1,5 +1,4 @@
 ﻿using DiscUtils;
-using DiscUtils.Internal;
 using DiscUtils.Streams;
 using SevenZipExtractor;
 using System;
