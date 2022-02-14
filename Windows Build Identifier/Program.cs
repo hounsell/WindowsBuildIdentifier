@@ -206,16 +206,16 @@ namespace WindowsBuildIdentifier
 
                 WindowsImageIndex[] windowsImageIndexes = files[0].Metadata.WindowsImageIndexes;
 
-                if (files.Any(x => x.Location.EndsWith("install.wim", StringComparison.InvariantCultureIgnoreCase)))
+                if (files.Any(x => x.Location.EndsWith("install.wim", StringComparison.OrdinalIgnoreCase)))
                 {
                     windowsImageIndexes = files.First(x => x.Location.EndsWith("install.wim")).Metadata
                         .WindowsImageIndexes;
                 }
                 else if (files.Any(
-                             x => x.Location.EndsWith("txtsetup.sif", StringComparison.InvariantCultureIgnoreCase)))
+                             x => x.Location.EndsWith("txtsetup.sif", StringComparison.OrdinalIgnoreCase)))
                 {
                     foreach (FileItem vfile in files.Where(x =>
-                                 x.Location.EndsWith("txtsetup.sif", StringComparison.InvariantCultureIgnoreCase)))
+                                 x.Location.EndsWith("txtsetup.sif", StringComparison.OrdinalIgnoreCase)))
                     {
                         windowsImageIndexes = windowsImageIndexes.Union(vfile.Metadata.WindowsImageIndexes).ToArray();
                     }
@@ -337,16 +337,16 @@ namespace WindowsBuildIdentifier
 
                 WindowsImageIndex[] windowsImageIndexes = files[0].Metadata.WindowsImageIndexes;
 
-                if (files.Any(x => x.Location.EndsWith("install.wim", StringComparison.InvariantCultureIgnoreCase)))
+                if (files.Any(x => x.Location.EndsWith("install.wim", StringComparison.OrdinalIgnoreCase)))
                 {
                     windowsImageIndexes = files.First(x => x.Location.EndsWith("install.wim")).Metadata
                         .WindowsImageIndexes;
                 }
                 else if (files.Any(
-                             x => x.Location.EndsWith("txtsetup.sif", StringComparison.InvariantCultureIgnoreCase)))
+                             x => x.Location.EndsWith("txtsetup.sif", StringComparison.OrdinalIgnoreCase)))
                 {
                     foreach (FileItem vfile in files.Where(x =>
-                                 x.Location.EndsWith("txtsetup.sif", StringComparison.InvariantCultureIgnoreCase)))
+                                 x.Location.EndsWith("txtsetup.sif", StringComparison.OrdinalIgnoreCase)))
                     {
                         windowsImageIndexes = windowsImageIndexes.Union(vfile.Metadata.WindowsImageIndexes).ToArray();
                     }

@@ -94,7 +94,7 @@ namespace WindowsBuildIdentifier.Interfaces
 
         public bool DirectoryExists(string path)
         {
-            return _entries.Any(x => x.Path.StartsWith(@"\" + path + @"\", StringComparison.InvariantCultureIgnoreCase));
+            return _entries.Any(x => x.Path.StartsWith(@"\" + path + @"\", StringComparison.OrdinalIgnoreCase));
         }
 
         public bool Exists(string path)
@@ -104,24 +104,24 @@ namespace WindowsBuildIdentifier.Interfaces
 
         public bool FileExists(string path)
         {
-            return _entries.Any(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            return _entries.Any(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
         }
 
         public FileAttributes GetAttributes(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetAttributes(_pathInFs + @"\" + entry.DiscLocation);
         }
 
         public DateTime GetCreationTime(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetCreationTime(_pathInFs + @"\" + entry.DiscLocation);
         }
 
         public DateTime GetCreationTimeUtc(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetCreationTimeUtc(_pathInFs + @"\" + entry.DiscLocation);
         }
 
@@ -164,7 +164,7 @@ namespace WindowsBuildIdentifier.Interfaces
 
         public long GetFileLength(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetFileLength(_pathInFs + @"\" + entry.DiscLocation);
         }
 
@@ -206,31 +206,31 @@ namespace WindowsBuildIdentifier.Interfaces
 
         public DateTime GetLastAccessTime(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetLastAccessTime(_pathInFs + @"\" + entry.DiscLocation);
         }
 
         public DateTime GetLastAccessTimeUtc(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetLastAccessTimeUtc(_pathInFs + @"\" + entry.DiscLocation);
         }
 
         public DateTime GetLastWriteTime(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetLastWriteTime(_pathInFs + @"\" + entry.DiscLocation);
         }
 
         public DateTime GetLastWriteTimeUtc(string path)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
             return _originalFs.GetLastWriteTimeUtc(_pathInFs + @"\" + entry.DiscLocation);
         }
 
         public SparseStream OpenFile(string path, FileMode mode)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
 
             if (_originalFs.Exists(_pathInFs + @"\" + entry.DiscLocation))
             {
@@ -272,7 +272,7 @@ namespace WindowsBuildIdentifier.Interfaces
 
         public SparseStream OpenFile(string path, FileMode mode, FileAccess access)
         {
-            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.InvariantCultureIgnoreCase));
+            TxtSetupFileEntry entry = _entries.First(x => x.Path.Equals(@"\" + path, StringComparison.OrdinalIgnoreCase));
 
             if (_originalFs.Exists(_pathInFs + @"\" + entry.DiscLocation))
             {
