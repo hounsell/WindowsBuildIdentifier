@@ -28,6 +28,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml.Linq;
 using WindowsBuildIdentifier.Interfaces;
 
 namespace WindowsBuildIdentifier.Identification.InstalledImage
@@ -56,6 +57,7 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
             string softwareHivePath = "";
             string systemHivePath = "";
             string userPath = "";
+            string virtualEditionsPath = "";
 
             string kernelEntry = fileentries.FirstOrDefault(x =>
                 (x.EndsWith(@"\ntkrnlmp.exe", StringComparison.InvariantCultureIgnoreCase) ||
@@ -102,6 +104,13 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
             if (userEntry != null)
             {
                 userPath = installProvider.ExpandFile(userEntry);
+            }
+
+            string virtualEditionsEntry = fileentries.FirstOrDefault(x =>
+                x.EndsWith(@"\Editions\EditionMappings.xml", StringComparison.InvariantCultureIgnoreCase));
+            if (virtualEditionsEntry != null)
+            {
+                virtualEditionsPath = installProvider.ExpandFile(virtualEditionsEntry);
             }
 
             #region Version Gathering
@@ -283,7 +292,7 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
             else if (!string.IsNullOrEmpty(systemHivePath))
             {
                 Console.WriteLine("Extracting additional edition information");
-                (string baseSku, string sku) = ExtractEditionFromRegistry(systemHivePath, softwareHivePath);
+                (string baseSku, string sku) = ExtractEditionFromRegistry(systemHivePath, softwareHivePath, virtualEditionsPath);
                 report.BaseSku = baseSku;
                 report.Sku = sku;
             }
@@ -442,9 +451,21 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
         }
 
         private static (string baseSku, string sku) ExtractEditionFromRegistry(string systemHivePath,
-            string softwareHivePath)
+            string softwareHivePath, string virtualEditionsPath)
         {
             (string baseSku, string sku) ret = ("", "");
+            Dictionary<string, string> virtualEditionsMapping = new Dictionary<string, string>();
+
+            if (!string.IsNullOrEmpty(virtualEditionsPath))
+            {
+                using (FileStream virtualEditionsStream = new(virtualEditionsPath, FileMode.Open, FileAccess.Read))
+                {
+                    var veDoc = XDocument.Load(virtualEditionsStream);
+                    virtualEditionsMapping = veDoc.Descendants("Edition")
+                        .Where(e => e.Attribute("virtual")?.Value == "true" && e.Element("Name") != null && e.Element("ParentEdition") != null)
+                        .ToDictionary(e => e.Element("Name").Value, e => e.Element("ParentEdition").Value);
+                }
+            }
 
             using (FileStream softHiveStream = new(softwareHivePath, FileMode.Open, FileAccess.Read))
             using (RegistryHive softHive = new(softHiveStream))
@@ -456,6 +477,16 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
                     {
                         string edition = subkey.GetValue("EditionID") as string;
                         string compositionEdition = subkey.GetValue("CompositionEditionID") as string;
+
+                        if (virtualEditionsMapping.ContainsKey(edition))
+                        {
+                            return (virtualEditionsMapping[edition], edition);
+                        }
+
+                        if (!string.IsNullOrEmpty(virtualEditionsPath))
+                        {
+                            return (edition, edition);
+                        }
 
                         if (!string.IsNullOrEmpty(edition) && !string.IsNullOrEmpty(compositionEdition))
                         {
