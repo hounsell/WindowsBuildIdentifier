@@ -87,7 +87,7 @@ namespace WindowsBuildIdentifier
             SortedSet<Licensing> licensings = new() { f.Licensing };
             SortedSet<string> languages = new(f.LanguageCodes ?? new[] { "lang-unknown" });
             SortedSet<string> skus = new() { f.Sku.Replace("Server", "") };
-            SortedSet<string> baseSkus = new() { f.Sku.Replace("Server", "") };
+            SortedSet<string> baseSkus = new() { f.BaseSku.Replace("Server", "") };
             SortedSet<string> archs = new() { $"{f.Architecture}{f.BuildType}" };
 
             for (int i = 1; i < imageIndexes.Length; i++)
