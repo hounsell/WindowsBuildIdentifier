@@ -889,7 +889,7 @@ namespace WindowsBuildIdentifier
             Console.WriteLine();
             Console.WriteLine("Windows Build Identifier (WBI)");
             Console.WriteLine("Gustave Monce (@gus33000) (c) 2018-2021");
-            Console.WriteLine("Thomas Hounsell (c) 2021");
+            Console.WriteLine("Thomas Hounsell (c) 2021-2022");
             Console.WriteLine();
         }
 
