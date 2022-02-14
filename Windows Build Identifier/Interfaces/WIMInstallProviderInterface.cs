@@ -41,18 +41,17 @@ namespace WindowsBuildIdentifier.Interfaces
 
         public string ExpandFile(string entry)
         {
-            string pathprefix = string.IsNullOrEmpty(_index)
-                ? ""
-                : _index + (entry.StartsWith('\\') ? "" : "\\");
+            string filename = string.IsNullOrEmpty(_index)
+                ? entry
+                : _index + (entry.StartsWith('\\') ? "" : "\\") + entry;
 
-            if (!_archiveFile.Entries.Any(x =>
-                    x.FileName.Equals(pathprefix + entry, StringComparison.InvariantCultureIgnoreCase)))
+            Entry wimEntry = _archiveFile.Entries.FirstOrDefault(x =>
+                x.FileName.Equals(filename, StringComparison.OrdinalIgnoreCase));
+            if (wimEntry == null)
             {
                 return null;
             }
 
-            Entry wimEntry = _archiveFile.Entries.First(x =>
-                x.FileName.Equals(pathprefix + entry, StringComparison.InvariantCultureIgnoreCase));
 
             string tmp = Path.GetTempFileName();
             wimEntry.Extract(tmp);
@@ -62,17 +61,17 @@ namespace WindowsBuildIdentifier.Interfaces
 
         public string[] GetFileSystemEntries()
         {
-            string pathprefix = string.IsNullOrEmpty(_index) ? "" : _index + @"\";
-
-            string[] entries = _archiveFile.Entries.Where(x => x.FileName.StartsWith(pathprefix)).Select(x =>
+            if (string.IsNullOrEmpty(_index))
             {
-                if (!string.IsNullOrEmpty(pathprefix))
-                {
-                    return x.FileName[2..];
-                }
+                return _archiveFile.Entries.Select(x => x.FileName).ToArray();
+            }
 
-                return x.FileName;
-            }).ToArray();
+            string pathprefix = _index + @"\";
+
+            string[] entries = _archiveFile.Entries
+                .Where(x => x.FileName.StartsWith(pathprefix, StringComparison.OrdinalIgnoreCase))
+                .Select(x => x.FileName[2..])
+                .ToArray();
 
             return entries;
         }

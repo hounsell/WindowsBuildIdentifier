@@ -47,7 +47,7 @@ namespace SevenZipExtractor
             this.archive = this.sevenZipHandle.CreateInArchive(Formats.FormatGuidMapping[format]);
             this.archiveStream = new InStreamWrapper(File.OpenRead(archiveFilePath));
         }
-        
+
         public ArchiveFile(Stream archiveStream, SevenZipFormat? format = null, string libraryFilePath = null)
         {
             this.libraryFilePath = libraryFilePath;
@@ -77,9 +77,9 @@ namespace SevenZipExtractor
             this.archiveStream = new InStreamWrapper(archiveStream);
         }
 
-        public void Extract(string outputFolder, bool overwrite = false) 
+        public void Extract(string outputFolder, bool overwrite = false)
         {
-            this.Extract(entry => 
+            this.Extract(entry =>
             {
                 string fileName = Path.Combine(outputFolder, entry.FileName);
 
@@ -88,7 +88,7 @@ namespace SevenZipExtractor
                     return fileName;
                 }
 
-                if (!File.Exists(fileName) || overwrite) 
+                if (!File.Exists(fileName) || overwrite)
                 {
                     return fileName;
                 }
@@ -97,11 +97,11 @@ namespace SevenZipExtractor
             });
         }
 
-        public void Extract(Func<Entry, string> getOutputPath) 
+        public void Extract(Func<Entry, string> getOutputPath)
         {
             IList<Stream> fileStreams = new List<Stream>();
 
-            try 
+            try
             {
                 foreach (Entry entry in Entries)
                 {
@@ -134,7 +134,7 @@ namespace SevenZipExtractor
             }
             finally
             {
-                foreach (Stream stream in fileStreams) 
+                foreach (Stream stream in fileStreams)
                 {
                     if (stream != null)
                     {
@@ -163,26 +163,26 @@ namespace SevenZipExtractor
 
                 uint itemsCount = this.archive.GetNumberOfItems();
 
-                this.entries = new List<Entry>();
+                this.entries = new List<Entry>((int)itemsCount);
 
                 for (uint fileIndex = 0; fileIndex < itemsCount; fileIndex++)
                 {
                     string fileName = this.GetProperty<string>(fileIndex, ItemPropId.kpidPath);
                     bool isFolder = this.GetProperty<bool>(fileIndex, ItemPropId.kpidIsFolder);
-                    bool isEncrypted = this.GetProperty<bool>(fileIndex, ItemPropId.kpidEncrypted);
-                    ulong size = this.GetProperty<ulong>(fileIndex, ItemPropId.kpidSize);
-                    ulong packedSize = this.GetProperty<ulong>(fileIndex, ItemPropId.kpidPackedSize);
-                    DateTime creationTime = this.GetPropertySafe<DateTime>(fileIndex, ItemPropId.kpidCreationTime);
+                    bool isEncrypted = false; // this.GetProperty<bool>(fileIndex, ItemPropId.kpidEncrypted);
+                    ulong size = 0; // this.GetProperty<ulong>(fileIndex, ItemPropId.kpidSize);
+                    ulong packedSize = 0; // this.GetProperty<ulong>(fileIndex, ItemPropId.kpidPackedSize);
+                    DateTime creationTime = DateTime.MinValue; // this.GetPropertySafe<DateTime>(fileIndex, ItemPropId.kpidCreationTime);
                     DateTime lastWriteTime = this.GetPropertySafe<DateTime>(fileIndex, ItemPropId.kpidLastWriteTime);
-                    DateTime lastAccessTime = this.GetPropertySafe<DateTime>(fileIndex, ItemPropId.kpidLastAccessTime);
-                    uint crc = this.GetPropertySafe<uint>(fileIndex, ItemPropId.kpidCRC);
-                    uint attributes = this.GetPropertySafe<uint>(fileIndex, ItemPropId.kpidAttributes);
-                    string comment = this.GetPropertySafe<string>(fileIndex, ItemPropId.kpidComment);
-                    string hostOS = this.GetPropertySafe<string>(fileIndex, ItemPropId.kpidHostOS);
-                    string method = this.GetPropertySafe<string>(fileIndex, ItemPropId.kpidMethod);
+                    DateTime lastAccessTime = DateTime.MinValue; // this.GetPropertySafe<DateTime>(fileIndex, ItemPropId.kpidLastAccessTime);
+                    uint crc = 0; // this.GetPropertySafe<uint>(fileIndex, ItemPropId.kpidCRC);
+                    uint attributes = 0; // this.GetPropertySafe<uint>(fileIndex, ItemPropId.kpidAttributes);
+                    string comment = ""; // this.GetPropertySafe<string>(fileIndex, ItemPropId.kpidComment);
+                    string hostOS = ""; // this.GetPropertySafe<string>(fileIndex, ItemPropId.kpidHostOS);
+                    string method = ""; // this.GetPropertySafe<string>(fileIndex, ItemPropId.kpidMethod);
 
-                    bool isSplitBefore = this.GetPropertySafe<bool>(fileIndex, ItemPropId.kpidSplitBefore);
-                    bool isSplitAfter = this.GetPropertySafe<bool>(fileIndex, ItemPropId.kpidSplitAfter);
+                    bool isSplitBefore = false; // this.GetPropertySafe<bool>(fileIndex, ItemPropId.kpidSplitBefore);
+                    bool isSplitAfter = false; // this.GetPropertySafe<bool>(fileIndex, ItemPropId.kpidSplitAfter);
 
                     this.entries.Add(new Entry(this.archive, fileIndex)
                     {
@@ -294,7 +294,7 @@ namespace SevenZipExtractor
             bool isNullable = type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>);
             Type underlyingType = isNullable ? Nullable.GetUnderlyingType(type) : type;
 
-            T result = (T)Convert.ChangeType(value.ToString(), underlyingType);
+            T result = (T)Convert.ChangeType(value, underlyingType);
 
             return result;
         }
