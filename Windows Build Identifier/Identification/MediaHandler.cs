@@ -141,6 +141,10 @@ namespace WindowsBuildIdentifier.Identification
                 provider.SetIndex(index);
 
                 WindowsImage report = DetectionHandler.IdentifyWindowsNT(provider);
+                if (report == null)
+                {
+                    continue;
+                }
 
                 // fallback
                 if ((string.IsNullOrEmpty(report.Sku) || report.Sku == "TerminalServer") &&

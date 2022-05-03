@@ -87,7 +87,9 @@ namespace WindowsBuildIdentifier
             SortedSet<Licensing> licensings = new() { f.Licensing };
             SortedSet<string> languages = new(f.LanguageCodes ?? new[] { "lang-unknown" });
             SortedSet<string> skus = new() { f.Sku.Replace("Server", "") };
-            SortedSet<string> baseSkus = new() { f.BaseSku.Replace("Server", "") };
+            SortedSet<string> baseSkus = string.IsNullOrEmpty(f.BaseSku)
+                ? new()
+                : new() { f.BaseSku.Replace("Server", "") };
             SortedSet<string> archs = new() { $"{f.Architecture}{f.BuildType}" };
 
             for (int i = 1; i < imageIndexes.Length; i++)
@@ -208,7 +210,7 @@ namespace WindowsBuildIdentifier
 
                 if (files.Any(x => x.Location.EndsWith("install.wim", StringComparison.OrdinalIgnoreCase)))
                 {
-                    windowsImageIndexes = files.First(x => x.Location.EndsWith("install.wim")).Metadata
+                    windowsImageIndexes = files.First(x => x.Location.EndsWith("install.wim", StringComparison.OrdinalIgnoreCase)).Metadata
                         .WindowsImageIndexes;
                 }
                 else if (files.Any(
@@ -339,7 +341,7 @@ namespace WindowsBuildIdentifier
 
                 if (files.Any(x => x.Location.EndsWith("install.wim", StringComparison.OrdinalIgnoreCase)))
                 {
-                    windowsImageIndexes = files.First(x => x.Location.EndsWith("install.wim")).Metadata
+                    windowsImageIndexes = files.First(x => x.Location.EndsWith("install.wim", StringComparison.OrdinalIgnoreCase)).Metadata
                         .WindowsImageIndexes;
                 }
                 else if (files.Any(

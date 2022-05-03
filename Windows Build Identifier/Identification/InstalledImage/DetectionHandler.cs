@@ -59,10 +59,12 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
             string userPath = "";
             string virtualEditionsPath = "";
 
-            string kernelEntry = fileentries.FirstOrDefault(x =>
-                (x.EndsWith(@"\ntkrnlmp.exe", StringComparison.OrdinalIgnoreCase) ||
-                 x.EndsWith(@"\ntoskrnl.exe", StringComparison.OrdinalIgnoreCase))
-                && x.Contains("System32", StringComparison.OrdinalIgnoreCase));
+            string kernelEntry = fileentries
+                .Where(x =>
+                    (x.EndsWith(@"\ntkrnlmp.exe", StringComparison.OrdinalIgnoreCase) ||
+                     x.EndsWith(@"\ntoskrnl.exe", StringComparison.OrdinalIgnoreCase)))
+                .OrderBy(x => x.Contains("System32", StringComparison.OrdinalIgnoreCase))
+                .FirstOrDefault();
             if (kernelEntry != null)
             {
                 kernelPath = installProvider.ExpandFile(kernelEntry);
@@ -154,7 +156,7 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
             report.Licensing = info2.Licensing;
             report.LanguageCodes = info2.LanguageCodes;
 
-            if (report.LanguageCodes == null || report.LanguageCodes.Length == 0)
+            if (!string.IsNullOrEmpty(kernelPath) && (report.LanguageCodes == null || report.LanguageCodes.Length == 0))
             {
                 FileVersionInfo infover = FileVersionInfo.GetVersionInfo(kernelPath);
 
@@ -195,6 +197,14 @@ namespace WindowsBuildIdentifier.Identification.InstalledImage
                 report.DeltaVersion = correctVersion.DeltaVersion;
                 report.BranchName = correctVersion.BranchName;
                 report.CompileDate = correctVersion.CompileDate;
+            }
+
+            if (report.BuildNumber == 0)
+            {
+                Console.WriteLine(
+                    "Couldn't find Windows version data within this image.");
+                // couldn't find a good install within this image
+                return null;
             }
 
             // we have to scan all binaries because early versions of NT
