@@ -506,6 +506,34 @@ namespace WindowsBuildIdentifier.Interfaces
             return sku;
         }
 
+        public Identification.Licensing GetLicensingFromTxtSetupMedia()
+        {
+            FileIniDataParser parser = new();
+
+            parser.Parser.Configuration.AllowDuplicateSections = true;
+            parser.Parser.Configuration.AllowDuplicateKeys = true;
+            parser.Parser.Configuration.SkipInvalidLines = true;
+
+            SparseStream stream = _originalFs.OpenFile(_pathInFs + @"\setupp.ini", FileMode.Open);
+            StreamReader setuppIni = new(stream);
+            IniData data = parser.ReadData(setuppIni);
+
+            if (data.TryGetKey("Pid.Pid", out string pid))
+            {
+                if (pid.EndsWith("270", StringComparison.Ordinal))
+                {
+                    return Identification.Licensing.Volume;
+                }
+
+                if (pid.EndsWith("OEM", StringComparison.Ordinal))
+                {
+                    return Identification.Licensing.OEM;
+                }
+            }
+
+            return Identification.Licensing.Retail;
+        }
+
         private void LoadTxtSetupData(IFileSystem originalFs, string pathInFs)
         {
             List<TxtSetupFileEntry> fileList = new();

@@ -230,6 +230,7 @@ namespace WindowsBuildIdentifier.Identification
 
             WindowsImage report = DetectionHandler.IdentifyWindowsNT(provider);
             report.Sku = fileSystem.GetSkuFromTxtSetupMedia(report.BuildNumber);
+            report.Licensing = fileSystem.GetLicensingFromTxtSetupMedia();
             report = DetectionHandler.FixSkuNames(report, false);
 
             Common.DisplayReport(report);
