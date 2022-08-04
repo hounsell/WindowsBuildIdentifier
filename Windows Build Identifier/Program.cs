@@ -695,6 +695,32 @@ namespace WindowsBuildIdentifier
 
                             File.WriteAllText(opts.Output, xml);
                         }
+                        else if (result.Any(x =>
+                                     x.Location.EndsWith("ValidationOS.wim", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            FileItem wimtag = result.First(x =>
+                                x.Location.EndsWith("ValidationOS.wim", StringComparison.OrdinalIgnoreCase));
+
+                            XmlSerializer xsSubmit = new(typeof(WindowsImageIndex[]));
+                            string xml;
+
+                            using (StringWriter sww = new())
+                            {
+                                XmlWriterSettings settings = new()
+                                {
+                                    Indent = true,
+                                    IndentChars = "     ",
+                                    NewLineOnAttributes = false,
+                                    OmitXmlDeclaration = true
+                                };
+
+                                using XmlWriter writer = XmlWriter.Create(sww, settings);
+                                xsSubmit.Serialize(writer, wimtag.Metadata.WindowsImageIndexes);
+                                xml = sww.ToString();
+                            }
+
+                            File.WriteAllText(opts.Output, xml);
+                        }
                         else if (result.Any(x => x.Location.ToLower().EndsWith(@"\txtsetup.sif")))
                         {
                             IEnumerable<WindowsImageIndex[]> txtsetups = result.Where(x => x.Location.ToLower().EndsWith(@"\txtsetup.sif"))
