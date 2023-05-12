@@ -70,6 +70,42 @@ namespace WindowsBuildIdentifier
             return Path.Join(dir, file);
         }
 
+        public static SortedSet<string> SlimifySkuList(SortedSet<string> list, bool rewriteEnterpriseBase = false)
+        {
+            if (list.Count < 5)
+            {
+                return list;
+            }
+
+            foreach (string sku in list.ToArray())
+            {
+                // Don't include derivative core SKUs in filename list if full is also included
+                if (sku.EndsWith("Core") && list.Contains(sku[..^4]))
+                {
+                    list.Remove(sku);
+                }
+
+                // Don't include derivative eval SKUs in filename list if full is also included
+                if (sku.EndsWith("Eval") && (list.Contains(sku[..^4])
+                    || (rewriteEnterpriseBase && list.Contains(sku.Replace("Enterprise", "Professional")[..^4]))))
+                {
+                    list.Remove(sku);
+                }
+            }
+
+            foreach (string sku in list.ToArray())
+            {
+                if (sku.EndsWith("N") && list.Contains(sku[..^1]))
+                {
+                    list.Remove(sku);
+                    list.Remove(sku[..^1]);
+                    list.Add($"{sku[..^1]}+N");
+                }
+            }
+
+            return list;
+        }
+
         private static (string, string) GetAdequateNameFromImageIndexes(WindowsImageIndex[] imageIndexes)
         {
             WindowsImage f = imageIndexes[0].WindowsImage;
@@ -121,27 +157,14 @@ namespace WindowsBuildIdentifier
                 }
             }
 
-            // Don't include core SKUs in filename list if full is also included
-            foreach (string sku in skus.ToArray())
-            {
-                if (sku.Length >= 5 && sku.EndsWith("Core") && skus.Contains(sku[..^4]))
-                {
-                    skus.Remove(sku);
-                }
-            }
-
-            foreach (string baseSku in baseSkus.ToArray())
-            {
-                if (baseSku.Length >= 5 && baseSku.EndsWith("Core") && baseSkus.Contains(baseSku[..^4]))
-                {
-                    baseSkus.Remove(baseSku);
-                }
-            }
+            bool rewriteEnterpriseSku = skus.Contains("Enterprise") && !baseSkus.Contains("Enterprise");
+            skus = SlimifySkuList(skus);
+            baseSkus = SlimifySkuList(baseSkus, rewriteEnterpriseSku);
 
             Console.WriteLine($"Build tag: {buildtag}");
             Console.WriteLine();
 
-            string skustr = skus.Count > 5 && baseSkus.Count < skus.Count
+            string skustr = skus.Count >= 4 && baseSkus.Count < skus.Count
                 ? string.Join("-", baseSkus) + "-multi"
                 : string.Join("-", skus);
             string licensingstr = licensings.Count == 0 ? "" : "_" + string.Join("-", licensings);

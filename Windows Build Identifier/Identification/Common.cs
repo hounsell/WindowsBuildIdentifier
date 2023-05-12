@@ -253,12 +253,7 @@ namespace WindowsBuildIdentifier.Identification
                 : "";
 
             Console.WriteLine();
-            Console.WriteLine("MajorVersion : " + report.MajorVersion);
-            Console.WriteLine("MinorVersion : " + report.MinorVersion);
-            Console.WriteLine("BuildNumber  : " + report.BuildNumber);
-            Console.WriteLine("DeltaVersion : " + report.DeltaVersion);
-            Console.WriteLine("BranchName   : " + report.BranchName);
-            Console.WriteLine("CompileDate  : " + report.CompileDate);
+            Console.WriteLine($"Build String : {report.MajorVersion}.{report.MinorVersion}.{report.BuildNumber}.{report.DeltaVersion}.{report.BranchName}.{report.CompileDate}");
             Console.WriteLine("Tag          : " + report.Tag);
             Console.WriteLine("Architecture : " + report.Architecture);
             Console.WriteLine("BuildType    : " + report.BuildType);
